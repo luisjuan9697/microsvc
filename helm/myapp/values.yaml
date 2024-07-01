@@ -1,6 +1,6 @@
 namespace: microapp  # Set your desired namespace for deployment
 
-replicaCount: 2  # Number of replicas for your application
+replicaCount: 2  # Number of replicas for your Node.js application
 
 image:
   repository: luisjuanguerrero026/myapp  # Docker image repository
@@ -22,10 +22,10 @@ ingress:
 resources:
   limits:
     cpu: 100m  # CPU limit per container
-    memory: 128Mi  # Memory limit per container
+    memory: 512Mi  # Memory limit per container
   requests:
     cpu: 100m  # CPU request per container
-    memory: 128Mi  # Memory request per container
+    memory: 512Mi  # Memory request per container
 
 nodeSelector: {}  # Node selector constraints for pod assignment
 
@@ -40,9 +40,11 @@ autoscaling:
   enabled: false  # Enable Horizontal Pod Autoscaler if needed
 
 mysql:
-  host: myapp-mysql-host  # MySQL host (replace with actual host)
-  user: myapp-mysql-user  # MySQL user (replace with actual user)
-  password: myapp-mysql-password  # MySQL password (replace with actual password)
-  database: myapp-mysql-database  # MySQL database name (replace with actual database name)
-  port: "3306"  # MySQL port (replace with actual port if different)
+  enabled: true  # Enable MySQL deployment
+  image: mysql:5.7  # MySQL Docker image
+  mysqlRootPassword: rootpassword  # Root password for MySQL server
+  mysqlUser: myuser  # MySQL user for application
+  mysqlPassword: secretpassword  # MySQL password for application
+  mysqlDatabase: mydatabase  # MySQL database name for application
+  mysqlPort: 3306  # MySQL port
 
