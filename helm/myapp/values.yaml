@@ -1,0 +1,48 @@
+namespace: microapp  # Set your desired namespace for deployment
+
+replicaCount: 2  # Number of replicas for your application
+
+image:
+  repository: luisjuanguerrero026/myapp  # Docker image repository
+  tag: "1.0"  # Docker image tag
+  pullPolicy: IfNotPresent  # Image pull policy
+
+service:
+  type: LoadBalancer  # Type of Kubernetes service
+  port: 80  # Service port
+
+ingress:
+  enabled: true  # Enable Kubernetes Ingress
+  annotations: {}  # Ingress annotations if needed
+  hosts:
+    - host: myapp.local  # Ingress host configuration
+      paths: ["/"]  # Paths for the Ingress
+  tls: []  # TLS configuration for HTTPS, if required
+
+resources:
+  limits:
+    cpu: 100m  # CPU limit per container
+    memory: 128Mi  # Memory limit per container
+  requests:
+    cpu: 100m  # CPU request per container
+    memory: 128Mi  # Memory request per container
+
+nodeSelector: {}  # Node selector constraints for pod assignment
+
+tolerations: []  # Tolerations for node taints
+
+affinity: {}  # Affinity rules for pod scheduling
+
+serviceAccount:
+  create: false  # Whether to create a new service account
+
+autoscaling:
+  enabled: false  # Enable Horizontal Pod Autoscaler if needed
+
+mysql:
+  host: myapp-mysql-host  # MySQL host (replace with actual host)
+  user: myapp-mysql-user  # MySQL user (replace with actual user)
+  password: myapp-mysql-password  # MySQL password (replace with actual password)
+  database: myapp-mysql-database  # MySQL database name (replace with actual database name)
+  port: "3306"  # MySQL port (replace with actual port if different)
+
