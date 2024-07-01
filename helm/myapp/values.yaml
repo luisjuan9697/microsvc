@@ -1,50 +1,53 @@
-namespace: microapp  # Set your desired namespace for deployment
+namespace: microapp
 
-replicaCount: 2  # Number of replicas for your Node.js application
+replicaCount: 2
 
 image:
-  repository: luisjuanguerrero026/myapp  # Docker image repository
-  tag: "1.0"  # Docker image tag
-  pullPolicy: IfNotPresent  # Image pull policy
+  repository: luisjuanguerrero026/myapp
+  tag: "1.2"
+  pullPolicy: IfNotPresent
 
 service:
-  type: LoadBalancer  # Type of Kubernetes service
-  port: 80  # Service port
+  type: LoadBalancer
+  port: 80
 
 ingress:
-  enabled: true  # Enable Kubernetes Ingress
-  annotations: {}  # Ingress annotations if needed
+  enabled: true
+  annotations: {}
   hosts:
-    - host: myapp.local  # Ingress host configuration
-      paths: ["/"]  # Paths for the Ingress
-  tls: []  # TLS configuration for HTTPS, if required
+    - host: myapp.local
+      paths: ["/"]
+  tls: []
 
 resources:
   limits:
-    cpu: 100m  # CPU limit per container
-    memory: 512Mi  # Memory limit per container
+    cpu: 100m
+    memory: 512Mi
   requests:
-    cpu: 100m  # CPU request per container
-    memory: 512Mi  # Memory request per container
+    cpu: 100m
+    memory: 512Mi
 
-nodeSelector: {}  # Node selector constraints for pod assignment
+nodeSelector: {}
 
-tolerations: []  # Tolerations for node taints
+tolerations: []
 
-affinity: {}  # Affinity rules for pod scheduling
+affinity: {}
 
 serviceAccount:
-  create: false  # Whether to create a new service account
+  create: false
 
 autoscaling:
-  enabled: false  # Enable Horizontal Pod Autoscaler if needed
+  enabled: false
 
 mysql:
-  enabled: true  # Enable MySQL deployment
-  image: mysql:5.7  # MySQL Docker image
-  mysqlRootPassword: rootpassword  # Root password for MySQL server
-  mysqlUser: myuser  # MySQL user for application
-  mysqlPassword: secretpassword  # MySQL password for application
-  mysqlDatabase: mydatabase  # MySQL database name for application
-  mysqlPort: 3306  # MySQL port
+  enabled: true
+  image: mysql:5.7
+  mysqlRootPassword: rootpassword
+  mysqlUser: myuser
+  mysqlPassword: secretpassword
+  mysqlDatabase: mydatabase
+  mysqlPort: 3306
+  service:
+    type: ClusterIP
+    port: 3306
 

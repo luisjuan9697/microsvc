@@ -23,10 +23,7 @@ spec:
             - containerPort: 3000
           env:
             - name: MYSQLDB_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: myapp-secret
-                  key: mysqldb-host
+              value: {{ include "myapp.fullname" . }}-mysql.{{ .Values.namespace }}.svc.cluster.local
             - name: MYSQLDB_USER
               valueFrom:
                 secretKeyRef:

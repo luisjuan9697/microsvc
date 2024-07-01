@@ -12,3 +12,4 @@ spec:
       targetPort: 3000
   selector:
     {{- include "myapp.selectorLabels" . | nindent 4 }}
+
