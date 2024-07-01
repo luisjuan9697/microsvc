@@ -4,10 +4,14 @@ metadata:
   name: {{ include "myapp.fullname" . }}
   namespace: {{ .Values.namespace }}
   annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
     {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
+  ingressClassName: alb
   rules:
     {{- range .Values.ingress.hosts }}
     - host: {{ .host }}
@@ -15,7 +19,7 @@ spec:
         paths:
           {{- range .paths }}
           - path: {{ . }}
-            pathType: ImplementationSpecific
+            pathType: Prefix
             backend:
               service:
                 name: {{ include "myapp.fullname" $ }}
@@ -33,4 +37,3 @@ spec:
       secretName: {{ .secretName }}
     {{- end }}
   {{- end }}
-
