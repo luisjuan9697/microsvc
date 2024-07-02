@@ -3,8 +3,8 @@ namespace: microapp
 replicaCount: 2
 
 image:
-  repository: luisjuanguerrero026/myapp
-  tag: "1.2"
+  repository: 767397671077.dkr.ecr.us-east-1.amazonaws.com/microservice
+  tag: ""
   pullPolicy: IfNotPresent
 
 service:
