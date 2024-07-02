@@ -36,15 +36,6 @@ This project demonstrates setting up a DevSecOps pipeline for deploying a three-
 16. **Monitoring Setup**: Install Prometheus and Grafana using Helm for monitoring the EKS cluster.
 17. **Application Deployment**: Use ArgoCD to deploy a stateless application to EKS.
 
-## Implementation
-
-### Step 1: Create an IAM User and Generate AWS Access Key
-
-```sh
-# Create an IAM user with AdministratorAccess
-aws iam create-user --user-name <username>
-aws iam attach-user-policy --user-name <username> --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
-aws iam create-access-key --user-name <username>
-```
+## Diagram
 
 ![alt tag](https://github.com/luisjuan9697/microsvc/blob/main/assets/awsSolution.png)
