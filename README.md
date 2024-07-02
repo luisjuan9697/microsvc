@@ -45,6 +45,6 @@ This project demonstrates setting up a DevSecOps pipeline for deploying a three-
 aws iam create-user --user-name <username>
 aws iam attach-user-policy --user-name <username> --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
 aws iam create-access-key --user-name <username>
+```
 
-
-![alt tag](https://s3-us-west-1.amazonaws.com/aerospike-fd/wp-content/uploads/2016/01/the_containers_are_coming.jpg)
+![alt tag](https://github.com/luisjuan9697/microsvc/blob/main/assets/awsSolution.png)
