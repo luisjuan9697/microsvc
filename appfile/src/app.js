@@ -1,6 +1,10 @@
 import express from "express";
 import path from "path";
+import { fileURLToPath } from "url"; // Import fileURLToPath
+
 import { pool } from "./database.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Define __dirname for ES Modules
 
 const app = express();
 
