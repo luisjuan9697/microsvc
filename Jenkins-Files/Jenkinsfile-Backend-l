@@ -1,20 +1,22 @@
 pipeline {
-    agent any 
+    agent any
     
     tools {
         jdk 'jdk'
         nodejs 'nodejs'
     }
     
-    environment  {
+    environment {
         SCANNER_HOME = tool 'sonar-scanner'
         AWS_ACCOUNT_ID = credentials('ACCOUNT_ID')
-        AWS_ECR_REPO_NAME = credentials('ECR_REPO2')
+        AWS_ECR_REPO_NAME = credentials('ECR_REPO')
         AWS_DEFAULT_REGION = 'us-east-1'
         REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/"
         NVD_API_KEY = credentials('nvd-api-key')
-        GIT_REPO_NAME = "End-to-End-Kubernetes-Three-Tier-DevSecOps-Project"
+        GIT_REPO_NAME = "microsvc"
         GIT_USER_NAME = "luisjuan9697"
+        GIT_BRANCH = 'main'
+        GIT_TOKEN = 'tokens' 
     }
     
     stages {
@@ -26,17 +28,15 @@ pipeline {
         
         stage('Checkout from Git') {
             steps {
-                git credentialsId: 'GITHUB', url: 'https://github.com/luisjuan9697/End-to-End-Kubernetes-Three-Tier-DevSecOps-Project.git'
+                checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[credentialsId: 'GITHUB', url: 'https://github.com/luisjuan9697/microsvc.git']]])
             }
         }
         
         stage('Sonarqube Analysis') {
             steps {
-                dir('Application-Code/backend') {
+                dir('appfile') {
                     withSonarQubeEnv('sonar-server') {
-                        sh ''' $SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.projectName=three-tier-backend \
-                        -Dsonar.projectKey=three-tier-backend '''
+                        sh "$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=microsvc -Dsonar.projectKey=microsvc"
                     }
                 }
             }
@@ -45,14 +45,14 @@ pipeline {
         stage('Quality Check') {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token' 
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
                 }
             }
         }
         
         stage('Trivy File Scan') {
             steps {
-                dir('Application-Code/backend') {
+                dir('appfile') {
                     sh 'trivy fs . > trivyfs.txt'
                 }
             }
@@ -61,10 +61,10 @@ pipeline {
         stage("Docker Image Build") {
             steps {
                 script {
-                    dir('Application-Code/backend') {
+                    dir('appfile') {
                         sh 'docker system prune -f'
                         sh 'docker container prune -f'
-                        sh 'docker build -t ${AWS_ECR_REPO_NAME} .'
+                        sh "docker build -t ${AWS_ECR_REPO_NAME} ."
                     }
                 }
             }
@@ -73,44 +73,44 @@ pipeline {
         stage("ECR Image Pushing") {
             steps {
                 script {
-                    sh 'aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${REPOSITORY_URI}'
-                    sh 'docker tag ${AWS_ECR_REPO_NAME} ${REPOSITORY_URI}${AWS_ECR_REPO_NAME}:${BUILD_NUMBER}'
-                    sh 'docker push ${REPOSITORY_URI}${AWS_ECR_REPO_NAME}:${BUILD_NUMBER}'
+                    sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${REPOSITORY_URI}"
+                    sh "docker tag ${AWS_ECR_REPO_NAME} ${REPOSITORY_URI}${AWS_ECR_REPO_NAME}:${BUILD_NUMBER}"
+                    sh "docker push ${REPOSITORY_URI}${AWS_ECR_REPO_NAME}:${BUILD_NUMBER}"
                 }
             }
         }
         
         stage("TRIVY Image Scan") {
             steps {
-                sh 'trivy image ${REPOSITORY_URI}${AWS_ECR_REPO_NAME}:${BUILD_NUMBER} > trivyimage.txt' 
+                sh "trivy image ${REPOSITORY_URI}${AWS_ECR_REPO_NAME}:${BUILD_NUMBER} > trivyimage.txt"
             }
         }
         
-        stage('Checkout Code') {
+        stage('Update Helm Chart Values') {
             steps {
-                git credentialsId: 'GITHUB', url: 'https://github.com/luisjuan9697/End-to-End-Kubernetes-Three-Tier-DevSecOps-Project.git'
-            }
-        }
-        
-        stage('Update Deployment file') {
-            steps {
-                dir('Kubernetes-Manifests-file/Backend') {
-                    withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-                        script {
-                            sh '''
-                                git config user.email "lluisjuanguerrero@gmail.com"
-                                git config user.name "luisjuan9697"
-                                BUILD_NUMBER=${BUILD_NUMBER}
-                                echo $BUILD_NUMBER
-                                imageTag=$(grep -oP '(?<=backend:)[^ ]+' deployment.yaml)
-                                echo $imageTag
-                                sed -i "s/${AWS_ECR_REPO_NAME}:${imageTag}/${AWS_ECR_REPO_NAME}:${BUILD_NUMBER}/" deployment.yaml
-                                git add deployment.yaml
-                                git commit -m "Update deployment Image to version ${BUILD_NUMBER}"
-                                git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:master
-                            '''
-                        }
-                    }
+                script {
+                    // Configure git user details
+                    sh 'git config user.email "lluisjuanguerrero@gmail.com"'
+                    sh 'git config user.name "luisjuan9697"'
+                    
+                    // Get the Jenkins build number
+                    def buildNumber = env.BUILD_NUMBER
+                    
+                    // Update image tag in values.yaml to match build number
+                    sh '''
+                    sed -i 's/tag: "18"/tag: "20"/' helm/myapp/values.yaml
+                    '''
+                    
+                    sh 'cat helm/myapp/values.yaml'
+                    
+                    // Add values.yaml to git staging
+                    sh 'git add helm/myapp/values.yaml'
+                    
+                    // Commit the changes with a descriptive message
+                    sh "git commit -m 'Update image tag to ${buildNumber} in Helm chart values.yaml'"
+                    
+                    // Push the commit to the remote repository
+                    sh "git push https://token@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main"
                 }
             }
         }
