@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import { pool } from "./database.js";
 
 const app = express();
@@ -6,8 +7,12 @@ const app = express();
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+// Serve static files
+app.use(express.static(path.join(__dirname, "public")));
+
+// Welcome route
 app.get("/", (req, res) => {
-  res.send("Welcome to my app!");
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // Endpoint to handle /ping
@@ -28,4 +33,3 @@ app.use((err, req, res, next) => {
 });
 
 export default app;
-
