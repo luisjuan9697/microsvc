@@ -39,3 +39,31 @@ This project demonstrates setting up a DevSecOps pipeline for deploying a three-
 ## Diagram
 
 ![alt tag](https://github.com/luisjuan9697/microsvc/blob/main/assets/awsSolution.png)
+
+# Directory Descriptions
+
+## appfile
+Contains the source code and Docker image files for the application.
+
+- **Dockerfile**: Instructions for building the Docker image.
+- **package.json** and **package-lock.json**: Node.js project files.
+- **src**: Source code directory, including application scripts and public assets.
+- **assets**: Contains additional resources for the project, such as the AWS solution architecture diagram.
+
+## create-secrets.txt
+Instructions or script for creating necessary secrets for the application.
+
+## helm
+Contains Helm charts for deploying the application to Kubernetes.
+
+- **myapp**: Helm chart directory for the application, including templates and configuration files.
+
+## Jenkins-Files
+Contains Jenkins pipeline files.
+
+- **Jenkinsfile-Backend-l**: Jenkinsfile for configuring the CI/CD pipeline.
+
+## jenkins-server-tf
+Contains Terraform scripts for setting up the Jenkins server and related infrastructure.
+
+- Includes configuration files for EC2 instances, IAM roles and policies, and other necessary resources.
