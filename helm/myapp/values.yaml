@@ -4,7 +4,7 @@ replicaCount: 2
 
 image:
   repository: 767397671077.dkr.ecr.us-east-1.amazonaws.com/microservice
-  tag: "18"
+  tag: "20"
   pullPolicy: IfNotPresent
 
 service:
