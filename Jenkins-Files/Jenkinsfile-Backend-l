@@ -98,7 +98,7 @@ pipeline {
                     
                     // Update image tag in values.yaml to match build number
                     sh '''
-                    sed -i 's/tag: "18"/tag: "20"/' helm/myapp/values.yaml
+                    sed -i 's/tag:.*/tag: "${buildNumber}"/' helm/myapp/values.yaml
                     '''
                     
                     sh 'cat helm/myapp/values.yaml'
