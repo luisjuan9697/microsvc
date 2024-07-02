@@ -1,5 +1,5 @@
 
-767397671077.dkr.ecr.us-east-1.amazonaws.com/microservice:14 (debian 12.5)
+767397671077.dkr.ecr.us-east-1.amazonaws.com/microservice:18 (debian 12.5)
 ==========================================================================
 Total: 1141 (UNKNOWN: 9, LOW: 504, MEDIUM: 524, HIGH: 97, CRITICAL: 7)
 
