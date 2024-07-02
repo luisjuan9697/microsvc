@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This project demonstrates setting up a DevSecOps pipeline for deploying a three-tier application on AWS. The focus is on creating a CI/CD pipeline, enhancing observability, and ensuring high availability using Docker, Jenkins, AWS, Terraform, and Kubernetes.
+This project demonstrates setting up a DevSecOps pipeline for deploying a stateless application on AWS. The focus is on creating a CI/CD pipeline, enhancing observability, and ensuring high availability using Docker, Jenkins, AWS, Terraform, and Kubernetes.
 
 ## Objectives
 
