@@ -15,7 +15,7 @@ ingress:
   enabled: true
   annotations: {}
   hosts:
-    - host: http://k8s-microapp-myapp-4f1734af6a-1512740950.us-east-1.elb.amazonaws.com
+    - host: k8s-microapp-myapp-4f1734af6a-1512740950.us-east-1.elb.amazonaws.com
       paths: ["/"]
   tls: []
 
